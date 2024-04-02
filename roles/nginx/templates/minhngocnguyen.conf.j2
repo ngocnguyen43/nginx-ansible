@@ -1,0 +1,7 @@
+server {
+    listen 4444;
+    location /minhngoc {
+        add_header Content-Type text/plain;
+        return 200 'minhngoc';
+    }
+}

@@ -1,0 +1,18 @@
+- name: Check NginX configuration
+  ansible.builtin.command: "nginx -t"
+  register: result
+  changed_when: "result.rc != 0"
+
+- name: NGINX
+  become: true
+  ansible.builtin.template:
+    src: ../templates/minhngocnguyen.conf.j2
+    dest: "{{ nginx_conf_dir }}"
+  notify: restart nginx
+
+- name: create symlink
+  ansible.builtin.file:
+    src: "{{ nginx_conf_dir }}"
+    dest: "{{ nginx_enable_dir }}"
+    state: link
+  become: true
