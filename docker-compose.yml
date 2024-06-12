@@ -1,0 +1,37 @@
+version: "3"
+
+networks:
+  monitoring: {}
+
+volumes:
+  prometheus-data: {}
+services:
+  prometheus:
+    image: bitnami/prometheus:2.51.1
+    ports:
+      - 9090:9090
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:10.1.9
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring
+
+  blackbox_exporter:
+    image: bitnami/blackbox-exporter:0.24.0
+    ports:
+      - 9115:9115
+    networks:
+      - monitoring
